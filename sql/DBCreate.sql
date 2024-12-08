@@ -1,7 +1,8 @@
---CREATE DATABASE GDA00545OT_AngelMarroquin;
-
+CREATE DATABASE GDA00545OT_AngelMarroquin;
+GO
 
 USE GDA00545OT_AngelMarroquin;
+GO
 
 IF OBJECT_ID(N'dbo.Roles', N'U') IS NULL
 CREATE TABLE Roles (
