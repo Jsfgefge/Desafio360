@@ -1,21 +1,28 @@
 --CREATE DATABASE GDA00545OT_AngelMarroquin;
 USE GDA00545OT_AngelMarroquin;
 
+IF OBJECT_ID(N'dbo.Roles', N'U') IS NULL
 CREATE TABLE Roles (
 	RolID int PRIMARY KEY IDENTITY(1,1), 
 	NombreRol varchar(30) NOT NULL,
 );
+GO
 
+IF OBJECT_ID(N'dbo.Estados', N'U') IS NULL
 CREATE TABLE Estados (
 	EstadoId int PRIMARY KEY IDENTITY(1,1),
 	NombreEstado varchar(30) NOT NULL,
 );
+GO
 
+IF OBJECT_ID(N'dbo.Marcas', N'U') IS NULL
 CREATE TABLE Marcas (
 	MarcaId int PRIMARY KEY IDENTITY(1,1),
 	NombreMarca varchar(30) NOT NULL,
 );
+GO
 
+IF OBJECT_ID(N'dbo.Clientes', N'U') IS NULL
 CREATE TABLE Clientes (
 	ClienteId int PRIMARY KEY IDENTITY(1,1),
 	RazonSocial varchar(50) NOT NULL,
@@ -25,7 +32,9 @@ CREATE TABLE Clientes (
 	Email varchar(50) NOT NULL,
 	CreatedDate datetime NOT NULL
 );
+GO
 
+IF OBJECT_ID(N'dbo.Usuarios', N'U') IS NULL
 CREATE TABLE Usuarios(
 	UsuarioId int PRIMARY KEY IDENTITY(1,1),
 	RolId int NOT NULL,
@@ -39,7 +48,9 @@ CREATE TABLE Usuarios(
 	CONSTRAINT FKUsuarios_RolId FOREIGN KEY (RolID) REFERENCES Roles(RolId),
 	CONSTRAINT FKUsuarios_EstadoId FOREIGN KEY (EstadoID) REFERENCES Estados(EstadoId)
 );
+GO
 
+IF OBJECT_ID(N'dbo.CategoriaProductos', N'U') IS NULL
 CREATE TABLE CategoriaProductos(
 	CategoriaProductoId int PRIMARY KEY IDENTITY(1,1),
 	NombreCategoria varchar(30) NOT NULL,
@@ -49,7 +60,9 @@ CREATE TABLE CategoriaProductos(
 	CONSTRAINT FKCateProductos_EstadoId FOREIGN KEY (EstadoId) REFERENCES Estados(EstadoId),
 	CONSTRAINT FKCateProductos_CreatedBy FOREIGN KEY (CreatedBy) REFERENCES Usuarios(UsuarioId)
 );
+GO
 
+IF OBJECT_ID(N'dbo.Productos', N'U') IS NULL
 CREATE TABLE Productos(
 	ProductoId int PRIMARY KEY IDENTITY(1,1),
 	CategoriaProductoId int NOT NULL, 
@@ -66,8 +79,9 @@ CREATE TABLE Productos(
 	CONSTRAINT FKProductos_EstadoId FOREIGN KEY (EstadoId) REFERENCES Estados(EstadoId),
 	CONSTRAINT FKProductos_CreatedBy FOREIGN KEY (CreatedBy) REFERENCES Usuarios(UsuarioId)
 );
+GO
 
-
+IF OBJECT_ID(N'dbo.OrderHeader', N'U') IS NULL
 CREATE TABLE OrderHeader(
 	OrderId int PRIMARY KEY IDENTITY(1,1),
 	UsuarioId int NOT NULL,
@@ -83,7 +97,9 @@ CREATE TABLE OrderHeader(
 	CONSTRAINT FKOrderHeader_UsuarioId FOREIGN KEY (UsuarioId) REFERENCES Usuarios(UsuarioId),
 	CONSTRAINT FKOrderHeader_EstadoId FOREIGN KEY (EstadoId) REFERENCES Estados(EstadoId)
 );
+GO
 
+IF OBJECT_ID(N'dbo.OrderDetails', N'U') IS NULL
 CREATE TABLE OrderDetails(
 	OrderDetailId int PRIMARY KEY IDENTITY(1,1),
 	OrderId int NOT NULL,
@@ -94,5 +110,47 @@ CREATE TABLE OrderDetails(
 	CONSTRAINT FKOrderDetail_OrderId FOREIGN KEY (OrderId) REFERENCES OrderHeader(OrderId),
 	CONSTRAINT FKOrderDetail_ProductId FOREIGN KEY (ProductoId) REFERENCES Productos(ProductoId)
 );
+GO
+
+CREATE PROCEDURE spUsuarios_Insert
+	@RolId int,
+	@EstadoId int,
+	@Email varchar(50),
+	@NombreUsuario varchar(100),
+	@PasswordUsuario varchar(100),
+	@Telefono int,
+	@BirthDate date,
+	@CreatedDate datetime
+AS
+BEGIN
+	INSERT INTO Usuarios(
+	RolId,
+	EstadoId,
+	Email,
+	NombreUsuario,
+	PasswordUsuario,
+	Telefono,
+	BirthDate,
+	CreatedDate
+	)
+	VALUES(
+	@RolId,
+	@EstadoId,
+	@Email,
+	@NombreUsuario,
+	@PasswordUsuario,
+	@Telefono,
+	@BirthDate,
+	@CreatedDate
+	)
+END;
+GO;
 
 
+CREATE PROCEDURE spProductos_Deshabilitar
+	@ProductoId int
+AS
+BEGIN
+	UPDATE Productos SET EstadoID = 1, PrecioUnidad = 0 WHERE ProductoId = @ProductoId
+END;
+GO
