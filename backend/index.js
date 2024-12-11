@@ -1,32 +1,20 @@
 const { Sequelize } = require('sequelize');
+require('dotenv').config();
+const DBNAME = process.env.DBNAME
+const DBUSER = process.env.DBUSER
+const DBPASS = process.env.DBPASS
 
-const sequelize = new Sequelize('GDA00545OT_AngelMarroquin', 'dbo', null, {
-    dialect: 'mssql',
-    host: 'localhost',
-    dialectOptions: {
-        authentication: {
-            type: 'ntlm',
-            options: {
-                userName: 'jsfge',
-                password: '',
-                domain: 'JSFGEFGE',
-                encrypt: true,
-                trustServerCertificate:true
-            },
-        },
-        options: {
-            port: 1433
-        },
-    }
+
+const sequelize = new Sequelize(DBNAME,DBUSER,DBPASS, {
+    dialect:'mssql',
 });
-
 
 async function test() {
     try {
         await sequelize.authenticate();
-        console.log("Nice");
-    } catch (err) {
-        console.log("Error", err)
+        console.log('Connection has been established successfully.');
+    } catch (error) {
+        console.error('Unable to connect to the database:', error);
     }
 }
 
