@@ -3,7 +3,8 @@ import testController from '../controllers/test.controller.js';
 
 const routerTest = Router();
 
-routerTest.get('/', testController.getProducts);
+routerTest.get('/productos', testController.getProducts);
+routerTest.post('/productos', testController.createProducto);
 
 routerTest.get('/test/:id',(req,res)=>{
     res.send('obteniendo un soloproducto ');
