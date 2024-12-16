@@ -8,6 +8,7 @@ IF OBJECT_ID(N'dbo.Roles', N'U') IS NULL
 CREATE TABLE Roles (
 	RolID int PRIMARY KEY IDENTITY(1,1), 
 	NombreRol varchar(30) NOT NULL,
+	IsArchived bit default 0
 );
 GO
 
@@ -15,6 +16,7 @@ IF OBJECT_ID(N'dbo.Estados', N'U') IS NULL
 CREATE TABLE Estados (
 	EstadoId int PRIMARY KEY IDENTITY(1,1),
 	NombreEstado varchar(30) NOT NULL,
+	IsArchived bit default 0
 );
 GO
 
@@ -22,6 +24,7 @@ IF OBJECT_ID(N'dbo.Marcas', N'U') IS NULL
 CREATE TABLE Marcas (
 	MarcaId int PRIMARY KEY IDENTITY(1,1),
 	NombreMarca varchar(30) NOT NULL,
+	IsArchived bit default 0
 );
 GO
 
@@ -50,7 +53,8 @@ CREATE TABLE Usuarios(
 	BirthDate date,
 	CreatedDate datetime NOT NULL,
 	CONSTRAINT FKUsuarios_RolId FOREIGN KEY (RolID) REFERENCES Roles(RolId),
-	CONSTRAINT FKUsuarios_EstadoId FOREIGN KEY (EstadoID) REFERENCES Estados(EstadoId)
+	CONSTRAINT FKUsuarios_EstadoId FOREIGN KEY (EstadoID) REFERENCES Estados(EstadoId),
+	IsArchived bit default 0
 );
 GO
 
@@ -63,7 +67,8 @@ CREATE TABLE CategoriaProductos(
 	CreatedDate datetime NOT NULL,
 	CreatedBy int NOT NULL,
 	CONSTRAINT FKCateProductos_EstadoId FOREIGN KEY (EstadoId) REFERENCES Estados(EstadoId),
-	CONSTRAINT FKCateProductos_CreatedBy FOREIGN KEY (CreatedBy) REFERENCES Usuarios(UsuarioId)
+	CONSTRAINT FKCateProductos_CreatedBy FOREIGN KEY (CreatedBy) REFERENCES Usuarios(UsuarioId),
+	IsArchived bit default 0
 );
 GO
 
@@ -83,7 +88,8 @@ CREATE TABLE Productos(
 	CONSTRAINT FKProductos_CategoriaProductoId FOREIGN KEY (CategoriaProductoId) REFERENCES CategoriaProductos(CategoriaProductoId),
 	CONSTRAINT FKProductos_MarcaId FOREIGN KEY (MarcaId) REFERENCES Marcas(MarcaId),
 	CONSTRAINT FKProductos_EstadoId FOREIGN KEY (EstadoId) REFERENCES Estados(EstadoId),
-	CONSTRAINT FKProductos_CreatedBy FOREIGN KEY (CreatedBy) REFERENCES Usuarios(UsuarioId)
+	CONSTRAINT FKProductos_CreatedBy FOREIGN KEY (CreatedBy) REFERENCES Usuarios(UsuarioId),
+	IsArchived bit default 0
 );
 GO
 
@@ -101,7 +107,8 @@ CREATE TABLE OrderHeader(
 	TotalOrder float NOT NULL,
 	CreateDate datetime NOT NULL,
 	CONSTRAINT FKOrderHeader_UsuarioId FOREIGN KEY (UsuarioId) REFERENCES Usuarios(UsuarioId),
-	CONSTRAINT FKOrderHeader_EstadoId FOREIGN KEY (EstadoId) REFERENCES Estados(EstadoId)
+	CONSTRAINT FKOrderHeader_EstadoId FOREIGN KEY (EstadoId) REFERENCES Estados(EstadoId),
+	IsArchived bit default 0
 );
 GO
 
@@ -114,7 +121,8 @@ CREATE TABLE OrderDetails(
 	Precio decimal NOT NULL,
 	Subtotal decimal NOT NULL,
 	CONSTRAINT FKOrderDetail_OrderId FOREIGN KEY (OrderId) REFERENCES OrderHeader(OrderId),
-	CONSTRAINT FKOrderDetail_ProductId FOREIGN KEY (ProductoId) REFERENCES Productos(ProductoId)
+	CONSTRAINT FKOrderDetail_ProductId FOREIGN KEY (ProductoId) REFERENCES Productos(ProductoId),
+	IsArchived bit default 0
 );
 GO
 
